@@ -33,4 +33,12 @@ export class UsuarioService {
   updateUsuario(user): Observable<any> {
     return this.http.put<any>(AppConstrants.baseUrl, user);
   }
+
+  userAutenticado() {
+    if (localStorage.getItem('token') !== null && localStorage.getItem('token').toString().trim() !== null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

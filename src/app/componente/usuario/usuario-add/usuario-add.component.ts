@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { UsuarioService } from 'src/app/service/usuario.service';
+import { Telefone } from 'src/app/model/telefone';
 
 @Component({
   selector: 'app-add',
@@ -11,6 +12,7 @@ import { UsuarioService } from 'src/app/service/usuario.service';
 export class UsuarioAddComponent implements OnInit {
 
   usuario = new User();
+  telefone = new Telefone();
 
   constructor(private routeActive: ActivatedRoute, private userService: UsuarioService) { }
 
@@ -38,9 +40,37 @@ export class UsuarioAddComponent implements OnInit {
     }
   }
 
+  deletarTelefone(id, i) {
+
+    //para remover telefones que só foi adicionado na tela, mas que ainda não enviou para a api
+    if (id == null) {
+      this.usuario.telefones.splice(i, 1);
+      return;
+    }
+
+    if (id !== null && confirm("Deseja remover?")) {
+      this.userService.removerTelefone(id).subscribe(data => {
+        console.info("Telefone removido = " + data);
+        this.usuario.telefones.splice(i, 1);
+      });
+    }
+  }
+
+  addFone() {
+
+    if (this.usuario.telefones === undefined) {
+      this.usuario.telefones = new Array<Telefone>();
+    }
+
+    this.usuario.telefones.push(this.telefone);
+    this.telefone = new Telefone(); //instancia novamente para deixar pronto para o próximo registro
+
+  }
+
   /*Para limpar a tela depois de gravar*/
   novo() {
     this.usuario = new User();
+    this.telefone = new Telefone();
   }
 
 }

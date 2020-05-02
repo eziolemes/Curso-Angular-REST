@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/service/usuario.service';
-import { Observable } from 'rxjs';
 import { User } from 'src/app/model/user';
 
 @Component({
@@ -10,17 +9,24 @@ import { User } from 'src/app/model/user';
 })
 export class UsuarioComponent implements OnInit {
 
-  students: Observable<User[]>;
+  students: Array<User[]>;
   nome: String;
+  total: Number;
 
-  constructor(private usuarioService: UsuarioService) {
-
-  }
+  constructor(private usuarioService: UsuarioService) {}
 
   carregarUsuarios() {
     this.usuarioService.getStudentList().subscribe(data => {
-      this.students = data;
+      this.students = data.content;
+      this.total = data.totalElements;
     });
+  }
+
+  carregarUsuariosPorNome() {
+        this.usuarioService.consultarUser(this.nome).subscribe(data => {
+        this.students = data.content;
+        this.total = data.totalElements;
+      });
   }
 
   /*Primeiro processo que será feito quando carregar a tela*/
@@ -28,24 +34,43 @@ export class UsuarioComponent implements OnInit {
     this.carregarUsuarios();
   }
 
-  deleteUsuario(id: Number) {
-    this.usuarioService.deletarUsuario(id).subscribe(data => {
-      console.log("Retorno do método delete: " + data);
+  deleteUsuario(id: Number, index) {
 
-      this.carregarUsuarios();
-    });
-  }
+    if (confirm('Deseja mesmo remover?')) {
 
-  consultarUser() {
-    console.log("Nome é: " + this.nome);
-
-    if (this.nome) {
-      this.usuarioService.consultarUser(this.nome).subscribe(data => {
-        this.students = data;
+      this.usuarioService.deletarUsuario(id).subscribe(data => {
+        this.students.splice(index, 1); /*Remover da tela*/
       });
-    } else {
-      this.carregarUsuarios();
     }
   }
 
+  consultarUser() {
+
+    if (this.nome === '') {
+
+      this.carregarUsuarios();
+
+    } else {
+
+      this.carregarUsuariosPorNome();
+
+    }
+  }
+
+  carregarPagina(pagina) {
+
+    if (this.nome !== '') {
+      this.usuarioService.consultarUserPorPage(this.nome, (pagina - 1)).subscribe(data => {
+        this.students = data.content;
+        this.total = data.totalElements;
+      });
+    } else {
+
+      this.usuarioService.getStudentListPage(pagina - 1).subscribe(data => {
+        this.students = data.content;
+        this.total = data.totalElements;
+      });
+
+    }
+  }
 }

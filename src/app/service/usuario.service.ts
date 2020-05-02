@@ -14,6 +14,10 @@ export class UsuarioService {
     return this.http.get<any>(AppConstrants.baseUrl);
   }
 
+    getStudentListPage(pagina): Observable<any> {
+    return this.http.get<any>(AppConstrants.baseUrl + 'page/' + pagina);
+  }
+
   deletarUsuario(id: Number): Observable<any> {
     return this.http.delete(AppConstrants.baseUrl + id, {responseType: 'text'});
   }
@@ -26,12 +30,20 @@ export class UsuarioService {
     return this.http.get(AppConstrants.baseUrl + "usuarioPorNome/" + nome);
   }
 
+  consultarUserPorPage(nome: String, page: Number): Observable<any> {
+    return this.http.get(AppConstrants.baseUrl + "usuarioPorNome/" + nome + "/page/" + page);
+  }
+
   salvarUsuario(user): Observable<any> {
     return this.http.post<any>(AppConstrants.baseUrl, user);
   }
 
   updateUsuario(user): Observable<any> {
     return this.http.put<any>(AppConstrants.baseUrl, user);
+  }
+
+  removerTelefone(id): Observable<any> {
+    return this.http.delete(AppConstrants.baseUrl + "removerTelefone/" + id, {responseType: 'text'});
   }
 
   userAutenticado() {

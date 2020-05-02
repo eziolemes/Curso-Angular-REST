@@ -11,6 +11,8 @@ import { UsuarioComponent } from './componente/usuario/usuario/usuario.component
 import { HttpInterceptorModule } from './service/header-interceptor.service';
 import { UsuarioAddComponent } from './componente/usuario/usuario-add/usuario-add.component';
 import { GuardiaoGuard } from './service/guardiao.guard';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 export const appRouters: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [GuardiaoGuard] },
@@ -22,6 +24,8 @@ export const appRouters: Routes = [
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(appRouters);
+
+export const optionsMark: Partial<IConfig> | (() => Partial<IConfig>) = {};
 
 @NgModule({
   declarations: [
@@ -36,7 +40,9 @@ export const routes: ModuleWithProviders = RouterModule.forRoot(appRouters);
     FormsModule,
     HttpClientModule,
     routes,
-    HttpInterceptorModule
+    HttpInterceptorModule,
+    NgxMaskModule.forRoot(optionsMark),
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
